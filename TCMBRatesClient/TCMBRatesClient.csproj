@@ -14,6 +14,7 @@
 		<Title>TCMB Döviz API</Title>
 		<PackageIcon>Tcmb-128x128-logo.png</PackageIcon>
 		<RepositoryUrl>https://github.com/Emarekip/TCMBRatesClient</RepositoryUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -22,7 +23,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="Resources\Tcmb-128x128-logo.png" Pack="true" PackagePath="\"/>
+		<None Include="..\README.md">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
+		<None Include="Resources\Tcmb-128x128-logo.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 </Project>
