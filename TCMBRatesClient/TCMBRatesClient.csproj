@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>TCMBRatesClient</PackageId>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<Authors>emrahatalay</Authors>
 		<Description>TCMB döviz kurları için istemci paketi</Description>
 		<PackageTags>TCMB Exchange Rates</PackageTags>
