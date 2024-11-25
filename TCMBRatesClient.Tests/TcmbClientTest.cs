@@ -1,11 +1,12 @@
 ﻿using TCMBRatesClient.TCMBClient;
+using Xunit.Abstractions;
 
 namespace TCMBRatesClient.Tests;
 
-public class UnitTest1
+public class TcmbClientTest(ITestOutputHelper testOutputHelper)
 {
     [Fact]
-    public async Task Test1()
+    public async Task TcmbClient_GetRatesAsync_Test()
     {
         var client = TcmbRates.CreateClient();
         var rates = await client.GetRatesAsync(DateTime.Now);
@@ -18,10 +19,9 @@ public class UnitTest1
 
         foreach (var rate in rates.ExchangeRates)
         {
-            Console.WriteLine($"{rate.CurrencyCode}: {rate.BuyRate}");
+            testOutputHelper.WriteLine($"{rate.CurrencyCode}: {rate.BuyRate}");
         }
 
-        Assert.NotNull(client);
-
+        Assert.NotNull(rates);
     }
 }

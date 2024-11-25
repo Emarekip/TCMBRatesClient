@@ -9,15 +9,9 @@ public class TcmbClient(HttpClient httpClient)
 
     public async Task<TcmbResponse?> GetRatesAsync(DateTime dateTime)
     {
-        if (dateTime.Hour < 10)
-        {
-            dateTime.AddDays(-1);
-            dateTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 15, 0, 0);
-        }
-        else if (dateTime.Hour > 15)
-            dateTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 15, 0, 0);
+        dateTime = GetDateTime(dateTime);
 
-        string url = $"{BaseUrl}{dateTime:yyyy}{dateTime:MM}/{dateTime:dd}{dateTime:MM}{dateTime:yyyy}-{dateTime:HH}00.xml";
+        var url = $"{BaseUrl}{dateTime:yyyy}{dateTime:MM}/{dateTime:dd}{dateTime:MM}{dateTime:yyyy}-{dateTime:HH}00.xml";
 
         var response = await httpClient.GetStringAsync(url);
 
@@ -25,10 +19,22 @@ public class TcmbClient(HttpClient httpClient)
 
         var serializer = new XmlSerializer(typeof(TcmbResponse));
 
-        if (serializer is null) return null;
-
-        var result = serializer!.Deserialize(reader) as TcmbResponse;
+        var result = serializer.Deserialize(reader) as TcmbResponse;
 
         return result;
+    }
+    
+    private static DateTime GetDateTime(DateTime dateTime)
+    {
+        switch (dateTime.Hour)
+        {
+            case < 10:
+                var addDays = dateTime.AddDays(-1);
+                return new DateTime(addDays.Year, addDays.Month, addDays.Day, 15, 0, 0);
+            case > 15:
+                return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 15, 0, 0);
+            default:
+                return dateTime;
+        }
     }
 }
