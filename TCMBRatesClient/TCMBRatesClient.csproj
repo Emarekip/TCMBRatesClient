@@ -13,6 +13,7 @@
 		<Company>Emrah Atalay</Company>
 		<Title>TCMB Döviz API</Title>
 		<PackageIcon>Tcmb-128x128-logo.png</PackageIcon>
+		<RepositoryUrl>https://github.com/Emarekip/TCMBRatesClient</RepositoryUrl>
 	</PropertyGroup>
 
 	<ItemGroup>
