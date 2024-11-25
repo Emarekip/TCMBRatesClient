@@ -1,6 +1,6 @@
-# TcmbExchangeRates
+# TCMBRatesClient
 
-**TcmbExchangeRates** is a .NET library for fetching exchange rates from the Central Bank of Turkey (TCMB). This package simplifies retrieving hourly exchange rate data as XML from the TCMB's official service.
+**TCMBRatesClient** is a .NET library for fetching exchange rates from the Central Bank of Turkey (TCMB). This package simplifies retrieving hourly exchange rate data as XML from the TCMB's official service.
 
 ---
 
@@ -16,62 +16,58 @@
 Install the package via NuGet Package Manager:
 
 ```bash
-dotnet add package TcmbExchangeRates
+dotnet add package TCMBRatesClient
 ```
 
-Or use the Visual Studio NuGet Package Manager UI to search for TcmbExchangeRates.
+Or use the Visual Studio NuGet Package Manager UI to search for TCMBRatesClient.
 
-Usage
+---
+
+## Usage
 
 Basic Example
 
 Below is an example of fetching exchange rate data for a specific date and time:
 
 ```csharp
-using TcmbExchangeRates;
+using TCMBRatesClient.TCMBClient;
 
-var client = new TcmbClient();
-var response = await client.GetExchangeRatesAsync(year: 2024, month: 11, day: 25, hour: 15);
+var client = TcmbRates.CreateClient();
+var rates = await client.GetRatesAsync(DateTime.Now);
 
-foreach (var rate in response.ExchangeRates)
+foreach (var rate in rates.ExchangeRates)
 {
-    Console.WriteLine($"Currency: {rate.CurrencyCode}, Buy Rate: {rate.BuyRate}");
+    Console.WriteLine($"{rate.CurrencyCode}: {rate.BuyRate}");
 }
 ```
+---
+## Models
 
-Get Exchange Rates for Current Date
-
-To fetch the latest hourly rates:
-    
-```csharp
-var response = await client.GetExchangeRatesAsync(DateTime.UtcNow);
-Console.WriteLine(response.ExchangeRates.FirstOrDefault()?.BuyRate);
-```
-
-Models
-
-TcmbResponse
+**TcmbResponse**
 
 The response model contains the following properties:
-•	HeaderInfo: Metadata about the response, such as the timestamp.
-•	ExchangeRates: A list of ExchangeRate objects.
+- HeaderInfo: Metadata about the response, such as the timestamp.
+- ExchangeRates: A list of ExchangeRate objects.
 
-ExchangeRate
+**ExchangeRate**
 
 Represents individual exchange rates with:
-•	CurrencyCode (e.g., USD, EUR)
-•	BuyRate (decimal)
+- CurrencyCode (e.g., USD, EUR)
+- BuyRate (decimal)
 
 
-Contribution
+**Contribution**
 
-Contributions are welcome! If you encounter a bug or have suggestions, please open an issue or submit a pull request on the GitHub repository.
+Contributions are welcome! If you encounter a bug or have suggestions, please open an issue or submit a pull request on the [GitHub](TCMBRatesClient) repository.
 
-License
+---
+## License
 
 This package is licensed under the MIT License. See the LICENSE file for more details.
 
-Contact
+---
+
+## Contact
 
 For inquiries or support, please contact:
-•	Email: emrah.atalay@outlook.com
+- Email: [emrah.atalay@outlook.com](mailto:emrah.atalay@outlook.com)
