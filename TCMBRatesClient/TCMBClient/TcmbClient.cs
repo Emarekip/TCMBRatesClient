@@ -1,23 +1,18 @@
-﻿using System.Xml.Linq;
+﻿using System.Xml.Serialization;
 using TCMBRatesClient.Helpers.Extensions;
 using TCMBRatesClient.Models;
 
 namespace TCMBRatesClient.TCMBClient;
 
-public class TcmbClient : TcmbClientBase
+public class TcmbClient(HttpClient httpClient) : TcmbClientBase
 {
     private const string TodayBaseUrl = "https://www.tcmb.gov.tr/kurlar/today.xml";
 
-    private IEnumerable<Currency> currencyList = [];
-    private DateTime _lastCheckTime;
-
-    public short DataCacheMinute { get; set; }
-
-    public override IEnumerable<Currency> GetTodayRates(CurrencyFilter? filter = null)
+    public override async Task<IEnumerable<Currency>> GetTodayRatesAsync(CurrencyFilter? filter = null, CancellationToken cancellationToken = default)
     {
-        var currencyList = GetXmlDataList();
+        var currencyList = await GetXmlDataList(cancellationToken);
 
-        if (filter == null)
+        if (filter is null)
             return currencyList;
 
         var query = currencyList.AsQueryable();
@@ -61,29 +56,16 @@ public class TcmbClient : TcmbClientBase
         return query.AsEnumerable();
     }
 
-    private IEnumerable<Currency> GetXmlDataList()
+    private async Task<IEnumerable<Currency>> GetXmlDataList(CancellationToken cancellationToken = default)
     {
-        if ((currencyList != null && currencyList.Any()) && (DateTime.Now - _lastCheckTime).TotalMinutes < DataCacheMinute)
-            return currencyList;
+        var xmlData = await httpClient.GetStringAsync(TodayBaseUrl, cancellationToken);
 
-        XDocument xmlDocument = XDocument.Load(TodayBaseUrl);
+        using var reader = new StringReader(xmlData);
 
-        currencyList = xmlDocument.Descendants("Currency")
-                               .Select(e => new Currency
-                               {
-                                   Code = e.Attribute("Kod")?.Value ?? "",
-                                   CurrencyCode = e.Attribute("CurrencyCode")?.Value ?? "",
-                                   CurrencyName = e.Element("CurrencyName")?.Value ?? "",
-                                   NameTR = e.Element("Isim")?.Value ?? "",
-                                   Unit = int.Parse(e.Element("Unit")?.Value ?? "0"),
-                                   ForexBuying = decimal.TryParse(e.Element("ForexBuying")?.Value.Replace(".", ","), out decimal FbPrice) ? FbPrice : 0,
-                                   ForexSelling = decimal.TryParse(e.Element("ForexSelling")?.Value.Replace(".", ","), out decimal FsPrice) ? FsPrice : 0,
-                                   BanknoteBuying = decimal.TryParse(e.Element("BanknoteBuying")?.Value.Replace(".", ","), out decimal BbPrice) ? BbPrice : null,
-                                   BanknoteSelling = decimal.TryParse(e.Element("BanknoteSelling")?.Value.Replace(".", ","), out decimal BsPrice) ? BsPrice : null,
-                               });
+        var serializer = new XmlSerializer(typeof(TcmbTodayResponse));
 
-        _lastCheckTime = DateTime.Now;
+        var result = serializer.Deserialize(reader) as TcmbTodayResponse;
 
-        return currencyList;
+        return result?.Currencies ?? [];
     }
 }

@@ -10,7 +10,7 @@ public abstract class TcmbClientBase
     /// </summary>
     /// <param name="filter"></param>
     /// <returns></returns>
-    public abstract IEnumerable<Currency> GetTodayRates(CurrencyFilter? filter = null);
+    public abstract Task<IEnumerable<Currency>> GetTodayRatesAsync(CurrencyFilter? filter = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Export rates
@@ -18,9 +18,9 @@ public abstract class TcmbClientBase
     /// <param name="exporter"> Export file type </param>
     /// <param name="filter"></param>
     /// <returns></returns>
-    public virtual ExportResult ExportRatesAsync(IExporter<Currency> exporter, CurrencyFilter? filter = null)
+    public virtual async Task<ExportResult> ExportRatesAsync(IExporter<Currency> exporter, CurrencyFilter? filter = null, CancellationToken cancellationToken = default)
     {
-        var currencyList = GetTodayRates(filter);
+        var currencyList = await GetTodayRatesAsync(filter, cancellationToken);
 
         return exporter.Export(currencyList);
     }

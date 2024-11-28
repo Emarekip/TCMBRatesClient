@@ -1,5 +1,4 @@
 ﻿using TCMBRatesClient.TCMBClient;
-using Xunit.Abstractions;
 
 namespace TCMBRatesClient.Tests;
 
@@ -8,9 +7,9 @@ public class TcmbClientTest
     [Fact]
     public void TcmbClient_GetRatesAsync_Test()
     {
-        var client = new TcmbClient();
+        var client = new TcmbClient(new HttpClient());
 
-        var rates = client.GetTodayRates();
+        var rates = client.GetTodayRatesAsync();
 
         Assert.NotNull(rates);
     }
