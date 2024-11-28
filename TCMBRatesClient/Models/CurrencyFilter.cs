@@ -1,4 +1,6 @@
-﻿namespace TCMBRatesClient.Models;
+﻿using TCMBRatesClient.Models.Enums;
+
+namespace TCMBRatesClient.Models;
 
 public sealed record CurrencyFilter
 {

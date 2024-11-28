@@ -1,4 +1,4 @@
-﻿namespace TCMBRatesClient.Exporters.Base;
+﻿namespace TCMBRatesClient.Exporters.Core;
 
 public sealed record ExportResult
 {

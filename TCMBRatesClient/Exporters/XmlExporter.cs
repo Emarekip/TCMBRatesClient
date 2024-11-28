@@ -1,11 +1,14 @@
 ﻿using System.Text;
 using System.Xml.Serialization;
-using TCMBRatesClient.Exporters.Base;
+using TCMBRatesClient.Exporters.Core;
+using TCMBRatesClient.Exporters.Enums;
 
 namespace TCMBRatesClient.Exporters;
 
 public class XmlExporter<T> : IExporter<T>
 {
+    public ExportType ExportType => ExportType.Xml;
+
     public ExportResult Export(IEnumerable<T> items)
     {
         XmlSerializer serializer = new(typeof(List<T>));

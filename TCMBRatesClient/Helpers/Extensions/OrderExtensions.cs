@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using TCMBRatesClient.Models;
+using TCMBRatesClient.Models.Enums;
 
 namespace TCMBRatesClient.Helpers.Extensions;
 public static class OrderExtensions

@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace TCMBRatesClient.Exporters.Base;
+namespace TCMBRatesClient.Exporters.Core;
 
 public sealed class ExporterFactory
 {

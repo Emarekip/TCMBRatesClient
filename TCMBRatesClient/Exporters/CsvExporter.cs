@@ -1,11 +1,14 @@
 ﻿using System.Reflection;
 using System.Text;
-using TCMBRatesClient.Exporters.Base;
+using TCMBRatesClient.Exporters.Core;
+using TCMBRatesClient.Exporters.Enums;
 
 namespace TCMBRatesClient.Exporters;
 
 public class CsvExporter<T> : IExporter<T>
 {
+    public ExportType ExportType => ExportType.Csv;
+
     public ExportResult Export(IEnumerable<T> items)
     {
         bool isFirstIteration = true;

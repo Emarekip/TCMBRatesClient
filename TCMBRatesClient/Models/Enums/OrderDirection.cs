@@ -1,4 +1,4 @@
-﻿namespace TCMBRatesClient.Models;
+﻿namespace TCMBRatesClient.Models.Enums;
 
 public enum OrderDirection
 {
