@@ -9,7 +9,7 @@ public class TcmbClientTest(ITestOutputHelper testOutputHelper)
     public async Task TcmbClient_GetRatesAsync_Test()
     {
         var client = TcmbRates.CreateClient();
-        var rates = await client.GetRatesAsync(DateTime.Now);
+        var rates = await client.GetHourlyRatesAsync(DateTime.Now);
 
         if (rates is null)
         {
