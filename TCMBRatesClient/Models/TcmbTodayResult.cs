@@ -6,7 +6,7 @@ namespace TCMBRatesClient.Models;
 public sealed record TcmbTodayResponse
 {
     [XmlAttribute("Tarih")]
-    public required string DateTR { get; set; }
+    public required string DateTr { get; set; }
 
     [XmlAttribute("Date")]
     public required string Date { get; set; }

@@ -9,6 +9,7 @@ public abstract class TcmbClientBase
     /// Get today rates from TCMB
     /// </summary>
     /// <param name="filter"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public abstract Task<IEnumerable<Currency>> GetTodayRatesAsync(CurrencyFilter? filter = null, CancellationToken cancellationToken = default);
 
@@ -17,6 +18,7 @@ public abstract class TcmbClientBase
     /// </summary>
     /// <param name="exporter"> Export file type </param>
     /// <param name="filter"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public virtual async Task<ExportResult> ExportRatesAsync(IExporter<Currency> exporter, CurrencyFilter? filter = null, CancellationToken cancellationToken = default)
     {

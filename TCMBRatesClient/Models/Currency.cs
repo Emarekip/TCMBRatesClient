@@ -17,26 +17,44 @@ public sealed record Currency
     public int Unit { get; set; }
 
     [XmlElement("Isim")]
-    public required string NameTR { get; set; }
+    public required string NameTr { get; set; }
 
     [XmlElement("CurrencyName")]
     public required string CurrencyName { get; set; }
-
+    
     [XmlElement("ForexBuying")]
-    public decimal? ForexBuying { get; set; }
-
+    public string? ForexBuyingRaw { get; set; }
+    
+    [XmlIgnore]
+    public decimal? ForexBuying => decimal.TryParse(ForexBuyingRaw?.Replace(".",","), out var value) ? value : null;
+    
     [XmlElement("ForexSelling")]
-    public decimal? ForexSelling { get; set; }
-
+    public string? ForexSellingRaw { get; set; }
+    
+    [XmlIgnore]
+    public decimal? ForexSelling => decimal.TryParse(ForexSellingRaw?.Replace(".",","), out var value) ? value : null;
+    
     [XmlElement("BanknoteBuying")]
-    public decimal? BanknoteBuying { get; set; }
-
+    public string? BanknoteBuyingRaw { get; set; }
+    
+    [XmlIgnore]
+    public decimal? BanknoteBuying => decimal.TryParse(BanknoteBuyingRaw?.Replace(".",","), out var value) ? value : null;
+    
     [XmlElement("BanknoteSelling")]
-    public decimal? BanknoteSelling { get; set; }
-
+    public string? BanknoteSellingRaw { get; set; }
+    
+    [XmlIgnore]
+    public decimal? BanknoteSelling => decimal.TryParse(BanknoteSellingRaw?.Replace(".",","), out var value) ? value : null;
+    
     [XmlElement("CrossRateUSD")]
-    public decimal? CrossRateUSD { get; set; }
-
+    public string? CrossRateUsdRaw { get; set; }
+    
+    [XmlIgnore]
+    public decimal? CrossRateUsd => decimal.TryParse(CrossRateUsdRaw?.Replace(".",","), out var value) ? value : null;
+    
     [XmlElement("CrossRateOther")]
-    public decimal? CrossRateOther { get; set; }
+    public string? CrossRateOtherRaw { get; set; }
+    
+    [XmlIgnore]
+    public decimal? CrossRateOther => decimal.TryParse(CrossRateOtherRaw?.Replace(".",","), out var value) ? value : null;
 }

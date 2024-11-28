@@ -21,7 +21,7 @@ public class TcmbClient(HttpClient httpClient) : TcmbClientBase
             query = query.Where(e => e.CurrencyCode.Contains(filter.CurrencyCode, StringComparison.CurrentCultureIgnoreCase));
 
         if (!string.IsNullOrWhiteSpace(filter.SearchKey))
-            query = query.Where(e => e.NameTR.Contains(filter.SearchKey, StringComparison.CurrentCultureIgnoreCase) || e.CurrencyName.Contains(filter.SearchKey, StringComparison.CurrentCultureIgnoreCase));
+            query = query.Where(e => e.NameTr.Contains(filter.SearchKey, StringComparison.CurrentCultureIgnoreCase) || e.CurrencyName.Contains(filter.SearchKey, StringComparison.CurrentCultureIgnoreCase));
 
         if (filter.Unit.HasValue)
             query = query.Where(e => e.Unit == filter.Unit);
