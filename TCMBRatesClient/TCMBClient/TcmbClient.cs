@@ -3,15 +3,16 @@ using TCMBRatesClient.Models;
 
 namespace TCMBRatesClient.TCMBClient;
 
-public class TcmbClient(HttpClient httpClient)
+public class TcmbClient(HttpClient httpClient) : TcmbClientBase
 {
-    private const string BaseUrl = "https://www.tcmb.gov.tr/reeskontkur/";
-
-    public async Task<TcmbResponse?> GetRatesAsync(DateTime dateTime)
+    private const string HouryBaseUrl = "https://www.tcmb.gov.tr/reeskontkur/";
+    private const string TodayBaseUrl = "https://www.tcmb.gov.tr/kurlar/today.xml";
+        
+    public override async Task<TcmbResponse?> GetHourlyRatesAsync(DateTime dateTime)
     {
         dateTime = GetDateTime(dateTime);
 
-        var url = $"{BaseUrl}{dateTime:yyyy}{dateTime:MM}/{dateTime:dd}{dateTime:MM}{dateTime:yyyy}-{dateTime:HH}00.xml";
+        var url = $"{HouryBaseUrl}{dateTime:yyyy}{dateTime:MM}/{dateTime:dd}{dateTime:MM}{dateTime:yyyy}-{dateTime:HH}00.xml";
 
         var response = await httpClient.GetStringAsync(url);
 
@@ -23,7 +24,7 @@ public class TcmbClient(HttpClient httpClient)
 
         return result;
     }
-    
+
     private static DateTime GetDateTime(DateTime dateTime)
     {
         switch (dateTime.Hour)
@@ -36,5 +37,18 @@ public class TcmbClient(HttpClient httpClient)
             default:
                 return dateTime;
         }
+    }
+
+    public override async Task<IEnumerable<Currency>> GetTodayRatesAsync(CurrencyFilter? filter = null)
+    {
+        var response = await httpClient.GetStringAsync(TodayBaseUrl);
+
+        using var reader = new StringReader(response);
+
+        var serializer = new XmlSerializer(typeof(Currency[]));
+
+        if (serializer.Deserialize(reader) is not Currency[] result) return [];
+
+        return result;
     }
 }
