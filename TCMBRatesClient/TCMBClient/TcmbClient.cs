@@ -26,7 +26,7 @@ public class TcmbClient : TcmbClientBase
             query = query.Where(e => e.CurrencyCode.Contains(filter.CurrencyCode, StringComparison.CurrentCultureIgnoreCase));
 
         if (!string.IsNullOrWhiteSpace(filter.SearchKey))
-            query = query.Where(e => e.Isim.Contains(filter.SearchKey, StringComparison.CurrentCultureIgnoreCase) || e.CurrenyName.Contains(filter.SearchKey, StringComparison.CurrentCultureIgnoreCase));
+            query = query.Where(e => e.NameTR.Contains(filter.SearchKey, StringComparison.CurrentCultureIgnoreCase) || e.CurrencyName.Contains(filter.SearchKey, StringComparison.CurrentCultureIgnoreCase));
 
         if (filter.Unit.HasValue)
             query = query.Where(e => e.Unit == filter.Unit);
@@ -71,9 +71,10 @@ public class TcmbClient : TcmbClientBase
         currencyList = xmlDocument.Descendants("Currency")
                                .Select(e => new Currency
                                {
+                                   Code = e.Attribute("Kod")?.Value ?? "",
                                    CurrencyCode = e.Attribute("CurrencyCode")?.Value ?? "",
-                                   CurrenyName = e.Element("CurrencyName")?.Value ?? "",
-                                   Isim = e.Element("Isim")?.Value ?? "",
+                                   CurrencyName = e.Element("CurrencyName")?.Value ?? "",
+                                   NameTR = e.Element("Isim")?.Value ?? "",
                                    Unit = int.Parse(e.Element("Unit")?.Value ?? "0"),
                                    ForexBuying = decimal.TryParse(e.Element("ForexBuying")?.Value.Replace(".", ","), out decimal FbPrice) ? FbPrice : 0,
                                    ForexSelling = decimal.TryParse(e.Element("ForexSelling")?.Value.Replace(".", ","), out decimal FsPrice) ? FsPrice : 0,

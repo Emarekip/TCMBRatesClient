@@ -6,8 +6,12 @@ namespace TCMBRatesClient.Tests;
 public class TcmbClientTest
 {
     [Fact]
-    public async Task TcmbClient_GetRatesAsync_Test()
+    public void TcmbClient_GetRatesAsync_Test()
     {
-        Assert.NotNull(null);
+        var client = new TcmbClient();
+
+        var rates = client.GetTodayRates();
+
+        Assert.NotNull(rates);
     }
 }
