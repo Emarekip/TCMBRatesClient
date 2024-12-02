@@ -32,28 +32,17 @@ Below is an example of fetching exchange rate data for a specific date and time:
 ```csharp
 using TCMBRatesClient.TCMBClient;
 
-var client = TcmbRates.CreateClient();
-var rates = await client.GetRatesAsync(DateTime.Now);
+ITcmbClient client = new TcmbClient();
+
+var rates = await client.GetTodayRatesAsync();
 
 foreach (var rate in rates.ExchangeRates)
 {
-    Console.WriteLine($"{rate.CurrencyCode}: {rate.BuyRate}");
+    Console.WriteLine($"{rate.NameTr} - {rate.ForexBuying} - {rate.ForexSelling}");
 }
 ```
 ---
 ## Models
-
-**TcmbResponse**
-
-The response model contains the following properties:
-- HeaderInfo: Metadata about the response, such as the timestamp.
-- ExchangeRates: A list of ExchangeRate objects.
-
-**ExchangeRate**
-
-Represents individual exchange rates with:
-- CurrencyCode (e.g., USD, EUR)
-- BuyRate (decimal)
 
 
 **Contribution**
