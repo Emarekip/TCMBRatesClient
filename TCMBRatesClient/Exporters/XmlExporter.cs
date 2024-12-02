@@ -13,12 +13,12 @@ public class XmlExporter<T> : IExporter<T>
     {
         XmlSerializer serializer = new(typeof(List<T>));
 
-        var stringwriter = new StringWriter();
-        serializer.Serialize(stringwriter, items.ToList());
+        var stringWriter = new StringWriter();
+        serializer.Serialize(stringWriter, items.ToList());
 
         return new ExportResult
         {
-            Data = Encoding.UTF8.GetBytes(stringwriter.ToString()),
+            Data = Encoding.UTF8.GetBytes(stringWriter.ToString()),
             MimeType = "text/xml",
             FileExtension = ".xml"
         };

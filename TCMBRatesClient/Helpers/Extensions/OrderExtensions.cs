@@ -7,10 +7,10 @@ public static class OrderExtensions
     public static IQueryable<T> DynamicOrder<T>(this IQueryable<T> query, string fieldName, OrderDirection? direction = OrderDirection.Ascending)
     {
         var parameter = Expression.Parameter(typeof(T), "x");
-        var property = Expression.Property(parameter, fieldName!);
+        var property = Expression.Property(parameter, fieldName);
         var lambda = Expression.Lambda(property, parameter);
 
-        string methodName = direction == OrderDirection.Ascending ? "OrderBy" : "OrderByDescending";
+        var methodName = direction == OrderDirection.Ascending ? "OrderBy" : "OrderByDescending";
 
         var method = typeof(Queryable).GetMethods()
             .First(m => m.Name == methodName && m.GetParameters().Length == 2);

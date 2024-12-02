@@ -9,7 +9,7 @@ public static class TcmbClientConfiguration
     public static IServiceCollection AddTcmbClient(this IServiceCollection services)
     {
         services.AddScoped<TcmbClient>();
-
+        
         services.AddScoped(typeof(IExporter<>));
 
         return services;

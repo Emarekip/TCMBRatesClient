@@ -4,7 +4,7 @@ using TCMBRatesClient.Models;
 
 namespace TCMBRatesClient.TCMBClient;
 
-public class TcmbClient(HttpClient httpClient) : TcmbClientBase
+public class TcmbClient : TcmbClientBase
 {
     private const string TodayBaseUrl = "https://www.tcmb.gov.tr/kurlar/today.xml";
 
@@ -58,6 +58,10 @@ public class TcmbClient(HttpClient httpClient) : TcmbClientBase
 
     private async Task<IEnumerable<Currency>> GetXmlDataList(CancellationToken cancellationToken = default)
     {
+        using var httpClient = new HttpClient();
+        
+        httpClient.BaseAddress = new Uri(TodayBaseUrl);
+        
         var xmlData = await httpClient.GetStringAsync(TodayBaseUrl, cancellationToken);
 
         using var reader = new StringReader(xmlData);

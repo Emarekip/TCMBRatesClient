@@ -7,7 +7,7 @@ public class TcmbClientTest
     [Fact]
     public async Task TcmbClient_GetRatesAsync_Test()
     {
-        var client = new TcmbClient(new HttpClient());
+        var client = new TcmbClient();
 
         var rates = await client.GetTodayRatesAsync();
 
