@@ -8,18 +8,13 @@ public class TcmbClientTest(ITestOutputHelper testOutputHelper)
     [Fact]
     public async Task TcmbClient_GetRatesAsync_Test()
     {
-        var client = TcmbRates.CreateClient();
-        var rates = await client.GetRatesAsync(DateTime.Now);
+        ITcmbClient client = new TcmbClient();
 
-        if (rates is null)
-        {
-            Assert.Null(rates);
-            return;
-        }
+        var rates = await client.GetTodayRatesAsync();
 
-        foreach (var rate in rates.ExchangeRates)
+        foreach (var rate in rates)
         {
-            testOutputHelper.WriteLine($"{rate.CurrencyCode}: {rate.BuyRate}");
+            testOutputHelper.WriteLine($"{rate.NameTr} - {rate.ForexBuying} - {rate.ForexSelling}");
         }
 
         Assert.NotNull(rates);

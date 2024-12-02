@@ -1,40 +1,75 @@
 ﻿using System.Xml.Serialization;
+using TCMBRatesClient.Helpers.Extensions;
 using TCMBRatesClient.Models;
 
 namespace TCMBRatesClient.TCMBClient;
 
-public class TcmbClient(HttpClient httpClient)
+public class TcmbClient : TcmbClientBase
 {
-    private const string BaseUrl = "https://www.tcmb.gov.tr/reeskontkur/";
+    private const string TodayBaseUrl = "https://www.tcmb.gov.tr/kurlar/today.xml";
 
-    public async Task<TcmbResponse?> GetRatesAsync(DateTime dateTime)
+    public override async Task<IEnumerable<Currency>> GetTodayRatesAsync(CurrencyFilter? filter = null, CancellationToken cancellationToken = default)
     {
-        dateTime = GetDateTime(dateTime);
+        var currencyList = await GetXmlDataList(cancellationToken);
 
-        var url = $"{BaseUrl}{dateTime:yyyy}{dateTime:MM}/{dateTime:dd}{dateTime:MM}{dateTime:yyyy}-{dateTime:HH}00.xml";
+        if (filter is null)
+            return currencyList;
 
-        var response = await httpClient.GetStringAsync(url);
+        var query = currencyList.AsQueryable();
 
-        using var reader = new StringReader(response);
+        if (!string.IsNullOrWhiteSpace(filter.CurrencyCode))
+            query = query.Where(e => e.CurrencyCode.Contains(filter.CurrencyCode, StringComparison.CurrentCultureIgnoreCase));
 
-        var serializer = new XmlSerializer(typeof(TcmbResponse));
+        if (!string.IsNullOrWhiteSpace(filter.SearchKey))
+            query = query.Where(e => e.NameTr.Contains(filter.SearchKey, StringComparison.CurrentCultureIgnoreCase) || e.CurrencyName.Contains(filter.SearchKey, StringComparison.CurrentCultureIgnoreCase));
 
-        var result = serializer.Deserialize(reader) as TcmbResponse;
+        if (filter.Unit.HasValue)
+            query = query.Where(e => e.Unit == filter.Unit);
 
-        return result;
+        if (filter.MinForexBuying.HasValue)
+            query = query.Where(e => e.ForexBuying >= filter.MinForexBuying);
+
+        if (filter.MaxForexBuying.HasValue)
+            query = query.Where(e => e.ForexBuying <= filter.MaxForexBuying);
+
+        if (filter.MinForexSelling.HasValue)
+            query = query.Where(e => e.ForexSelling >= filter.MinForexSelling);
+
+        if (filter.MaxForexSelling.HasValue)
+            query = query.Where(e => e.ForexBuying >= filter.MaxForexSelling);
+
+        if (filter.MinBanknoteBuying.HasValue)
+            query = query.Where(e => e.BanknoteBuying >= filter.MinBanknoteBuying);
+
+        if (filter.MaxBanknoteBuying.HasValue)
+            query = query.Where(e => e.BanknoteBuying <= filter.MaxBanknoteBuying);
+
+        if (filter.MinBanknoteSelling.HasValue)
+            query = query.Where(e => e.BanknoteSelling >= filter.MinBanknoteSelling);
+
+        if (filter.MaxBanknoteSelling.HasValue)
+            query = query.Where(e => e.BanknoteBuying >= filter.MaxBanknoteSelling);
+
+        if (!string.IsNullOrWhiteSpace(filter.OrderBy))
+            query = query.DynamicOrder(filter.OrderBy, filter.OrderDirection);
+
+        return query.AsEnumerable();
     }
-    
-    private static DateTime GetDateTime(DateTime dateTime)
+
+    private async Task<IEnumerable<Currency>> GetXmlDataList(CancellationToken cancellationToken = default)
     {
-        switch (dateTime.Hour)
-        {
-            case < 10:
-                var addDays = dateTime.AddDays(-1);
-                return new DateTime(addDays.Year, addDays.Month, addDays.Day, 15, 0, 0);
-            case > 15:
-                return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 15, 0, 0);
-            default:
-                return dateTime;
-        }
+        using var httpClient = new HttpClient();
+        
+        httpClient.BaseAddress = new Uri(TodayBaseUrl);
+        
+        var xmlData = await httpClient.GetStringAsync(TodayBaseUrl, cancellationToken);
+
+        using var reader = new StringReader(xmlData);
+
+        var serializer = new XmlSerializer(typeof(TcmbTodayResponse));
+
+        var result = serializer.Deserialize(reader) as TcmbTodayResponse;
+
+        return result?.Currencies ?? [];
     }
 }
