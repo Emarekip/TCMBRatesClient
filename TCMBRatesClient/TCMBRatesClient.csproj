@@ -9,12 +9,13 @@
 		<Version>2.0.0</Version>
 		<Authors>emrahatalay</Authors>
 		<Description>TCMB döviz kurları için istemci paketi</Description>
-		<PackageTags>TCMB Exchange Rates</PackageTags>
+		<PackageTags>Tcmb Exchange Rates Kur Doviz Turkish Lira TL Usd Euro Rate</PackageTags>
 		<Company>Emrah Atalay</Company>
 		<Title>TCMB Döviz API</Title>
 		<PackageIcon>Tcmb-128x128-logo.png</PackageIcon>
-		<RepositoryUrl>https://github.com/Emarekip/TCMBRatesClient</RepositoryUrl>
+		<RepositoryUrl>https://github.com/eatalay13/TCMBRatesClient</RepositoryUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<AssemblyVersion>2.0.0</AssemblyVersion>
 	</PropertyGroup>
 
 	<ItemGroup>

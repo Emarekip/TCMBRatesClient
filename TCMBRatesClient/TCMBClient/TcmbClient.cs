@@ -1,14 +1,30 @@
-﻿using System.Xml.Serialization;
-using TCMBRatesClient.Helpers.Extensions;
+﻿using TCMBRatesClient.Helpers.Extensions;
 using TCMBRatesClient.Models;
 
 namespace TCMBRatesClient.TCMBClient;
 
 public class TcmbClient : TcmbClientBase
 {
-    private const string TodayBaseUrl = "https://www.tcmb.gov.tr/kurlar/today.xml";
+    public override Task<IEnumerable<Currency>> GetTodayRatesAsync()
+    {
+        return GetRatesAsync();
+    }
 
-    public override async Task<IEnumerable<Currency>> GetTodayRatesAsync(CurrencyFilter? filter = null, CancellationToken cancellationToken = default)
+    public override Task<IEnumerable<Currency>> GetTodayRatesAsync(CancellationToken cancellationToken)
+    {
+        return GetRatesAsync(cancellationToken: cancellationToken);
+    }
+
+    public override Task<IEnumerable<Currency>> GetTodayRatesAsync(CurrencyFilter? filter,
+        CancellationToken cancellationToken)
+    {
+        return GetRatesAsync(filter, cancellationToken);
+    }
+
+    #region GetRates
+
+    private async Task<IEnumerable<Currency>> GetRatesAsync(CurrencyFilter? filter = null,
+        CancellationToken cancellationToken = default)
     {
         var currencyList = await GetXmlDataList(cancellationToken);
 
@@ -18,10 +34,13 @@ public class TcmbClient : TcmbClientBase
         var query = currencyList.AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(filter.CurrencyCode))
-            query = query.Where(e => e.CurrencyCode.Contains(filter.CurrencyCode, StringComparison.CurrentCultureIgnoreCase));
+            query = query.Where(e =>
+                e.CurrencyCode.Contains(filter.CurrencyCode, StringComparison.CurrentCultureIgnoreCase));
 
         if (!string.IsNullOrWhiteSpace(filter.SearchKey))
-            query = query.Where(e => e.NameTr.Contains(filter.SearchKey, StringComparison.CurrentCultureIgnoreCase) || e.CurrencyName.Contains(filter.SearchKey, StringComparison.CurrentCultureIgnoreCase));
+            query = query.Where(e =>
+                e.NameTr.Contains(filter.SearchKey, StringComparison.CurrentCultureIgnoreCase) ||
+                e.CurrencyName.Contains(filter.SearchKey, StringComparison.CurrentCultureIgnoreCase));
 
         if (filter.Unit.HasValue)
             query = query.Where(e => e.Unit == filter.Unit);
@@ -56,20 +75,5 @@ public class TcmbClient : TcmbClientBase
         return query.AsEnumerable();
     }
 
-    private async Task<IEnumerable<Currency>> GetXmlDataList(CancellationToken cancellationToken = default)
-    {
-        using var httpClient = new HttpClient();
-        
-        httpClient.BaseAddress = new Uri(TodayBaseUrl);
-        
-        var xmlData = await httpClient.GetStringAsync(TodayBaseUrl, cancellationToken);
-
-        using var reader = new StringReader(xmlData);
-
-        var serializer = new XmlSerializer(typeof(TcmbTodayResponse));
-
-        var result = serializer.Deserialize(reader) as TcmbTodayResponse;
-
-        return result?.Currencies ?? [];
-    }
+    #endregion
 }
