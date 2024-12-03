@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>TCMBRatesClient</PackageId>
-		<Version>2.0.0</Version>
+		<Version>2.0.1</Version>
 		<Authors>emrahatalay</Authors>
 		<Description>TCMB döviz kurları için istemci paketi</Description>
 		<PackageTags>Tcmb Exchange Rates Kur Doviz Turkish Lira TL Usd Euro Rate</PackageTags>
